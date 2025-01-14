@@ -1,0 +1,9 @@
+env: development
+database:
+  url: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+http:
+  host: localhost
+  port: 8080
+  readTimeout: 5s
+  writeTimeout: 5s
+  maxHeaderMegabytes: 1

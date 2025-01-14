@@ -1,0 +1,49 @@
+name: Linter & Tests
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!develop'
+  pull_request:
+    branches:
+      - '**'
+      - '!develop'
+
+jobs:
+
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.41
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.23.4
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create test db container
+        run: |
+          docker run --rm -d \
+            -p 5432:5432 \
+            --name postgres \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=postgres \
+            -e POSTGRES_DB=postgres \
+            postgres:17
+
+      - name: Integration Tests
+        run: GIN_MODE=release go test ./internal/delivery/http/v1
+
+      - name: Kill test db container
+        run: docker stop $(echo postgres)

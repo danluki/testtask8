@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    container_name: go-app
+    environment:
+      - APP_ENV=production
+      - APP_PORT=8080
+    restart: always
+    volumes:
+      - ./configs/config.docker.yaml:/etc/testtask/config.yaml
+    command: ["./bin/main", "start"]
+
+volumes:
+  postgres-data:
