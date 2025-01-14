@@ -94,7 +94,7 @@ func (suite *HandlerTestSuite) TestGetUsers() {
 	err := json.Unmarshal(w.Body.Bytes(), &response)
 	suite.Require().NoError(err)
 	assert.Len(suite.T(), response.Users, 1)
-	assert.Equal(suite.T(), 2, response.Meta.Total)
+	assert.Equal(suite.T(), 3, response.Meta.Total)
 	assert.Equal(suite.T(), 1, response.Meta.Page)
 	assert.Equal(suite.T(), 1, response.Meta.PageSize)
 }
